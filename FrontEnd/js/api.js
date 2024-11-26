@@ -1,6 +1,7 @@
 const urlAPIProjects = "http://localhost:5678/api/works";
 const urlAPICategories = "http://localhost:5678/api/categories";
 
+
 const getWorks = async () => {
     try {
         const response = await fetch(urlAPIProjects);
@@ -27,7 +28,6 @@ const displayWorks = async (categoryId = "all") => {
     const gallery = document.querySelector(".gallery");
     gallery.innerHTML = "";
     let filteredWorks;
-
 
     // Ternaire
     /*
