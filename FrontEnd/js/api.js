@@ -28,6 +28,8 @@ const displayWorks = async (categoryId = "all") => {
     gallery.innerHTML = "";
     let filteredWorks;
 
+
+    // Ternaire
     /*
         const filteredWorks = categoryId === "all" 
         ? works 
@@ -59,7 +61,7 @@ function setupFilters()
     const filterButtons = document.querySelectorAll(".filters button");
     for (let i = 0; i < filterButtons.length; i++) {
         const currentButton = filterButtons[i];
-        
+
         currentButton.addEventListener("click", function() {
         for (let j = 0; j < filterButtons.length; j++) {
             filterButtons[j].classList.remove("active");
@@ -70,7 +72,6 @@ function setupFilters()
         });
     }
 };
-
 
 displayWorks(); 
 setupFilters();
