@@ -180,6 +180,10 @@ input[type="submit"]{
 	border-radius: 60px ;
 }
 
+input[type="submit"]:hover {
+	background-color: #0E2F28;
+}
+
 footer nav ul {
 	display: flex;
 	justify-content: flex-end;
@@ -214,4 +218,54 @@ footer nav ul {
 .filters button.active {
 	background-color: #1D6154;
 	color: white;
+}
+
+
+#login {
+	width: 50%;
+	margin: auto;
+	max-width: 380px;
+}
+#login {
+	margin-top: 100px;
+}
+
+#login > * {
+	text-align: center;
+}
+
+#login h2{
+	margin-bottom: 20px;
+}
+#login a {
+	display: flex;
+	justify-content: center;
+	color: #3D3D3D;
+}
+
+#login form {
+	text-align: left;
+	margin-top:30px;
+	display: flex;
+	flex-direction: column;
+}
+
+#login input {
+	height: 50px;
+	font-size: 1.2em;
+	border: none;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+
+#login label {
+	margin: 2em 0 1em 0;
+}
+
+.errorBox {
+	display: flex;
+	justify-content: center;
+	background-color: #B1663C;
+	color: white;
+	padding: 10px;
+	border-radius: 10px;
 }

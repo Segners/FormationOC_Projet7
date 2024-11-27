@@ -1,7 +1,6 @@
 const urlAPIProjects = "http://localhost:5678/api/works";
 const urlAPICategories = "http://localhost:5678/api/categories";
 
-
 const getWorks = async () => {
     try {
         const response = await fetch(urlAPIProjects);
@@ -72,6 +71,30 @@ function setupFilters()
         });
     }
 };
+
+document.addEventListener("DOMContentLoaded", () => 
+{
+    const authBtn = document.getElementById("authBtn");
+
+    if (!authBtn) {
+        console.log("authBtn n'est pas trouvé !");
+        return;
+    }
+
+    if (localStorage.getItem("authToken")) {
+        console.log("Utilisateur connecté.");
+        authBtn.textContent = "logout";
+        authBtn.href = "#";
+
+        authBtn.addEventListener("click", () => {
+            localStorage.removeItem("authToken");
+            alert("Vous êtes déconnecté.");
+            window.location.reload();
+        });
+    } else {
+        console.log("Utilisateur non connecté.");
+    }
+});
 
 displayWorks(); 
 setupFilters();
