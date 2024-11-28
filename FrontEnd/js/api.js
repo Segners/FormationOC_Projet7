@@ -75,6 +75,8 @@ function setupFilters()
 document.addEventListener("DOMContentLoaded", () => 
 {
     const authBtn = document.getElementById("authBtn");
+    const filters = document.querySelector(".filters");
+    const projectsTitle = document.getElementById("projets");
 
     if (!authBtn) {
         console.log("authBtn n'est pas trouvé !");
@@ -86,6 +88,21 @@ document.addEventListener("DOMContentLoaded", () =>
         authBtn.textContent = "logout";
         authBtn.href = "#";
 
+        if (filters) {
+            filters.classList.add("hidden");
+        }
+
+        if (projectsTitle) {
+            const editButton = document.createElement("span");
+            editButton.className = "edit-projects";
+            editButton.innerHTML = `<i class="fa-regular fa-pen-to-square"></i> modifier`;
+            
+            editButton.addEventListener("click", () => {
+                alert("test si bouton fonctionne");
+            });
+
+            projectsTitle.appendChild(editButton);
+        }
         authBtn.addEventListener("click", () => {
             localStorage.removeItem("authToken");
             alert("Vous êtes déconnecté.");
@@ -93,6 +110,10 @@ document.addEventListener("DOMContentLoaded", () =>
         });
     } else {
         console.log("Utilisateur non connecté.");
+       if (filters) {
+        filters.classList.remove("hidden");
+    }
+
     }
 });
 

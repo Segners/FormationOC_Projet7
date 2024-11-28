@@ -220,6 +220,11 @@ footer nav ul {
 	color: white;
 }
 
+.filters.hidden {
+    visibility: hidden;
+    opacity: 0;
+   
+}
 
 #login {
 	width: 50%;
@@ -268,4 +273,29 @@ footer nav ul {
 	color: white;
 	padding: 10px;
 	border-radius: 10px;
+}
+
+.edit-projects {
+    margin-left: 20px;
+    font-size: 14px; 
+	font-weight: 400;
+	font-family: 'Work Sans', sans-serif;
+	top: 737px;
+	gap: 8px;
+    color: #000000;
+    cursor: pointer;
+    display: inline-flex;
+    transition: color 0.3s ease;
+	vertical-align: middle;
+}
+
+.edit-projects i {
+	width : 15.58px; 
+	height: 15.58px;
+	top: 735px;
+	left: 846px;
+}
+
+.edit-projects:hover {
+    color: #ff6347;
 }
