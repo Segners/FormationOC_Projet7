@@ -1,2 +1,1 @@
-# Portfolio-architecte-sophie-bluel
-Code du projet 7
+Projet 7
