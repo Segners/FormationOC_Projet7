@@ -300,12 +300,7 @@ footer nav ul {
 .edit-projects:hover {
     color: #ff6347;
 }
-
-<<<<<<< HEAD
 /* Modal */
-
-=======
->>>>>>> 10ec87ddde594176302cdb17eb9023cbbc9d261c
 .modal {
     position: fixed;
     top: 0;
@@ -498,11 +493,8 @@ hr {
 }
 .preview-image {
 	max-width: 150px;
-<<<<<<< HEAD
 	object-fit: cover;
-=======
-	object-fit: cover; /* Remplir la zone en gardant les proportions de l'image */
->>>>>>> 10ec87ddde594176302cdb17eb9023cbbc9d261c
+
 
 }
 .file-input {
