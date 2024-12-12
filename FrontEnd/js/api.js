@@ -1,7 +1,11 @@
+import { createModal, setupModal,displayProjectsInModal  } from "./modale.js";
+
 const urlAPIProjects = "http://localhost:5678/api/works";
 const urlAPICategories = "http://localhost:5678/api/categories";
 
-const getWorks = async () => {
+export let projects = [];
+
+export const getWorks = async () => {
     try {
         const response = await fetch(urlAPIProjects);
         const works = await response.json();
@@ -12,7 +16,7 @@ const getWorks = async () => {
     }
 };
 
-const getCategories = async () => {
+export const getCategories = async () => {
     try {
         const response = await fetch(urlAPICategories);
         const categories = await response.json();
@@ -22,29 +26,122 @@ const getCategories = async () => {
     }
 };
 
-const displayWorks = async (categoryId = "all") => {
-    const works = await getWorks();
+export const addProject = async (formData) => {
+    try {
+        const authToken = localStorage.getItem("authToken");
+        if (!authToken) {
+            throw new Error("Utilisateur non authentifié");
+        }
+
+        const response = await fetch(urlAPIProjects, {
+            method: "POST",
+            headers: {
+                "Authorization": `Bearer ${authToken}`,
+            },
+            body: formData,
+        });
+
+        if (!response.ok) {
+            const errorDetails = await response.text(); 
+            throw new Error(`Erreur lors de l'ajout du projet: ${errorDetails}`);
+        }
+
+        console.log("Projet ajouté avec succès.");
+        return response; 
+    } catch (error) {
+        console.error("Erreur dans addProject :", error);
+        throw error; 
+    }
+};
+
+
+export const deleteWork = async (id) => {
+    try {
+        const authToken = localStorage.getItem("authToken");
+        if (!authToken) {
+            throw new Error("Utilisateur non authentifié");
+        }
+
+        const response = await fetch(`${urlAPIProjects}/${id}`, {
+            method: "DELETE",
+            headers: {
+                "Authorization": `Bearer ${authToken}`,
+                "Content-Type": "application/json",
+            },
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Erreur API :", errorText);
+            throw new Error("Erreur lors de la suppression du projet.");
+        }
+
+        // Rafraîchir les projets à partir de l'API
+        await storeProjects
+    (); // Maj lle tableau
+
+        console.log("Projets après resynchronisation :", projects);
+
+        // Rafraîchir la galerie principale
+        initDisplay(); 
+
+        // Rafraîchir la modal
+        const modal = document.querySelector("#modal");
+        if (modal) {
+            displayProjectsInModal(modal, projects); // Utilise la nouvelle version des projets
+            setupDeleteButtons();
+        }
+
+        alert("Projet supprimé avec succès !");
+        return true;
+    } catch (error) {
+        console.error("Erreur lors de la suppression :", error.message);
+        alert("Impossible de supprimer le projet. Veuillez réessayer plus tard.");
+        return false;
+    }
+};
+
+
+export const setupDeleteButtons = () => {
+    const deleteButtons = document.querySelectorAll(".delete-btn");
+    deleteButtons.forEach((button) => {
+        button.innerHTML = '<i class="fa-solid fa-trash-can fa-sm"></i>';
+
+        button.addEventListener("click", async (event) => {
+            const projectId = event.target.closest(".delete-btn").dataset.id;
+            const confirmation = confirm("Êtes-vous sûr de vouloir supprimer ce projet ?");
+            if (confirmation) {
+                const isDeleted = await deleteWork(projectId);
+                if (isDeleted) {
+                    const projectItem = event.target.closest(".project-item");
+                    projectItem.remove();
+                }
+            }
+        });
+    });
+};
+
+const storeProjects = async () => {
+    try {
+        projects = await getWorks();
+        console.log("Projects stored locally:", projects);
+    } catch (error) {
+        console.error("Error storing projects:", error.message);
+    }
+};
+
+export const displayWorks = (categoryId = "all") => 
+{
     const gallery = document.querySelector(".gallery");
     gallery.innerHTML = "";
-    let filteredWorks;
 
-    // Ternaire
-    /*
-        const filteredWorks = categoryId === "all" 
-        ? works 
-        : works.filter(work => work.categoryId === parseInt(categoryId));
-    */
 
-    if (categoryId === "all") 
-    {
-        filteredWorks = works;
-    } else 
-    {
-        filteredWorks = works.filter(work => work.categoryId === parseInt(categoryId));
-    }
+    const filteredWorks = categoryId === "all" 
+        ? projects 
+        : projects.filter(work => work.categoryId === parseInt(categoryId));
 
-    for (const work of filteredWorks) 
-    {
+    
+    for (const work of filteredWorks) {
         const workElement = document.createElement("div");
         workElement.classList.add("work");
         workElement.innerHTML = `
@@ -72,50 +169,58 @@ function setupFilters()
     }
 };
 
-document.addEventListener("DOMContentLoaded", () => 
-{
-    const authBtn = document.getElementById("authBtn");
-    const filters = document.querySelector(".filters");
+document.addEventListener("DOMContentLoaded", async () => {
     const projectsTitle = document.getElementById("projets");
+    const filters = document.querySelector(".filters");
+    const authBtn = document.getElementById("authBtn");
 
-    if (!authBtn) {
-        console.log("authBtn n'est pas trouvé !");
-        return;
-    }
-
+    // Vérifier si l'utilisateur est authentifié
     if (localStorage.getItem("authToken")) {
         console.log("Utilisateur connecté.");
-        authBtn.textContent = "logout";
-        authBtn.href = "#";
 
         if (filters) {
             filters.classList.add("hidden");
         }
 
-        if (projectsTitle) {
-            const editButton = document.createElement("span");
-            editButton.className = "edit-projects";
-            editButton.innerHTML = `<i class="fa-regular fa-pen-to-square"></i> modifier`;
-            
-            editButton.addEventListener("click", () => {
-                alert("test si bouton fonctionne");
-            });
+        // Créer la modal
+        const modal = createModal();
+        const { openModal } = setupModal(modal);
 
-            projectsTitle.appendChild(editButton);
-        }
+        // Créer le bouton "Modifier" et l'ajouter au DOM
+        const editButton = document.createElement("span");
+        editButton.className = "edit-projects";
+        editButton.innerHTML = `<i class="fa-regular fa-pen-to-square"></i> Modifier`;
+
+        editButton.addEventListener("click", () => {
+            // Afficher les projets stockés dans la modal
+            displayProjectsInModal(modal, projects);//  Utilise le tableau
+            openModal();
+        });
+
+        projectsTitle.appendChild(editButton);
+
+        // Configuration du bouton de déconnexion
+        authBtn.textContent = "Logout";
+        authBtn.href = "#";
         authBtn.addEventListener("click", () => {
             localStorage.removeItem("authToken");
             alert("Vous êtes déconnecté.");
             window.location.reload();
         });
+
     } else {
         console.log("Utilisateur non connecté.");
-       if (filters) {
-        filters.classList.remove("hidden");
-    }
-
+        if (filters) {
+            filters.classList.remove("hidden");
+        }
     }
 });
 
-displayWorks(); 
+const initDisplay = async () => {
+    await storeProjects
+();
+    displayWorks();
+};
+
+initDisplay();
 setupFilters();
