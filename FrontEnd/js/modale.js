@@ -121,7 +121,11 @@ export async function openAddPhotoModal(galleryModal)
     titleInput.type = "text";
     titleInput.name = "title";
     titleInput.classList.add("form-input");
+<<<<<<< HEAD
     titleInput.placeholder = "";
+=======
+    titleInput.placeholder = "";  // Vous pouvez définir un texte de placeholder si nécessaire
+>>>>>>> 10ec87ddde594176302cdb17eb9023cbbc9d261c
     titleInput.required = true;
 
     // Ajout du label et de l'input à la div form-group

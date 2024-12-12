@@ -221,4 +221,8 @@ const initDisplay = async () => {
 };
 
 initDisplay();
+<<<<<<< HEAD
 setupFilters();
+=======
+setupFilters();
+>>>>>>> 10ec87ddde594176302cdb17eb9023cbbc9d261c
