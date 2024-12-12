@@ -77,8 +77,7 @@ export const deleteWork = async (id) => {
         }
 
         // Rafraîchir les projets à partir de l'API
-        await storeProjects
-    (); // Maj lle tableau
+        await storeProjects(); // Maj lle tableau
 
         console.log("Projets après resynchronisation :", projects);
 
@@ -217,8 +216,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 const initDisplay = async () => {
-    await storeProjects
-();
+    await storeProjects();
     displayWorks();
 };
 
