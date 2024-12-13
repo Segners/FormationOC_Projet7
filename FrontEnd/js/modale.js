@@ -1,4 +1,5 @@
-import {setupDeleteButtons, getCategories, addProject, projects, displayWorks } from "./api.js";
+import { getCategories, addProject, projects } from "./api.js";
+import {setupDeleteButtons,displayWorks } from "./script.js";
 
 export function createModal() {
     const modal = document.createElement("div");
@@ -41,8 +42,10 @@ export function createModal() {
     // Ajout de la modal au DOM
     document.body.appendChild(modal);
 
-      // Gestion de l'ouverture de la modal d'ajout
-      addButton.addEventListener("click", () => {
+    const { closeModal } = setupModal(modal);
+
+    // Gestion de l'ouverture de la modal d'ajout
+    addButton.addEventListener("click", () => {
         openAddPhotoModal(modal);
         closeModal();
     });
@@ -98,14 +101,13 @@ export async function openAddPhotoModal(galleryModal)
     // Image de prévisualisation
     const previewImage = document.createElement("img");
     previewImage.classList.add("preview-image");
-    previewImage.style.display = "none"; // Cachée par défaut
+    previewImage.style.display = "none";
 
     // Ajout des éléments dans la section
     uploadSection.appendChild(placeholderIcon);
     uploadSection.appendChild(uploadLabel);
     uploadSection.appendChild(fileInfo);
     uploadSection.appendChild(previewImage);
-
 
     // Champs de saisie pour le titre
     const titleGroup = document.createElement("div");
@@ -124,7 +126,7 @@ export async function openAddPhotoModal(galleryModal)
     titleInput.placeholder = "";
     titleInput.required = true;
 
-    // Ajout du label et de l'input à la div form-group
+    //label et de l'input à la div form-group
     titleGroup.appendChild(titleLabel);
     titleGroup.appendChild(titleInput);
 
@@ -141,14 +143,14 @@ export async function openAddPhotoModal(galleryModal)
     categorySelect.classList.add("form-select");
     categorySelect.required = true;
 
-    // Ajouter une option vide par défaut
+    //option vide par défaut
     const defaultOption = document.createElement("option");
     defaultOption.value = "";
     defaultOption.textContent = "";
     defaultOption.selected = true;
     categorySelect.appendChild(defaultOption);
 
-    // Charger les catégories dynamiquement
+    // Charger les catégories
     try {
         const categories = await getCategories();
         categories.forEach((category) => {
@@ -208,17 +210,19 @@ export async function openAddPhotoModal(galleryModal)
     
         try {
             const response = await addProject(formData);
-            const newProject = await response.json(); // Obtenir les données du nouveau projet ajouté
+            //les données du nouveau projet ajouté
+            const newProject = await response.json(); 
     
-            // Mettre à jour localement la liste des projets
+            // Mettre à jour la liste des projets
             projects.push(newProject);
     
-            // Mettre à jour dynamiquement les galeries
+            // Mettre à jour les galeries
             displayWorks();
-            const galleryModal = document.querySelector("#modal"); // Référence à la modal principale
+            //modal principale
+            const galleryModal = document.querySelector("#modal"); 
             displayProjectsInModal(galleryModal, projects); 
     
-            // Réinitialiser le formulaire
+            // Reset le formulaire
             form.reset();
             previewImage.style.display = "none";
             uploadSection.classList.remove("hidden-upload");
