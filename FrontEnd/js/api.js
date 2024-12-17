@@ -1,8 +1,6 @@
 const urlAPIProjects = "http://localhost:5678/api/works";
 const urlAPICategories = "http://localhost:5678/api/categories";
 
-export let projects = [];
-
 export const getWorks = async () => {
     try {
         const response = await fetch(urlAPIProjects);

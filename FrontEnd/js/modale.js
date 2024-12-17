@@ -1,5 +1,5 @@
-import { getCategories, addProject, projects } from "./api.js";
-import {setupDeleteButtons,displayWorks } from "./script.js";
+import { getCategories, addProject,  } from "./api.js";
+import {setupDeleteButtons,displayWorks, projects } from "./script.js";
 
 export function createModal() {
     const modal = document.createElement("div");

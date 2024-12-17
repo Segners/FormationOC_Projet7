@@ -1,11 +1,11 @@
-import { getWorks, deleteWork, projects } from './api.js';
+import { getWorks, deleteWork } from './api.js';
 import { createModal, setupModal, displayProjectsInModal } from './modale.js';
+export let projects = [];
+
 
 export const storeProjects = async () => {
     try {
-        const works = await getWorks();
-        projects.length = 0;
-        projects.push(...works);
+        projects = await getWorks();
         console.log("List des projets:", projects);
     } catch (error) {
         console.error("Error storing projects:", error.message);
@@ -102,8 +102,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("Utilisateur non connecté.");
         if (filters) filters.classList.remove("hidden");
     }
-
-
 });
 
 const initDisplay = async () => {
