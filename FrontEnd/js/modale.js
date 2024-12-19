@@ -1,7 +1,9 @@
 import { getCategories, addProject,  } from "./api.js";
 import {setupDeleteButtons,displayWorks, projects } from "./script.js";
 
-export function createModal() {
+// Creation de la modale principale galerie
+export function createModal() 
+{
     const modal = document.createElement("div");
     modal.id = "modal";
     modal.classList.add("modal", "hidden");
@@ -53,9 +55,10 @@ export function createModal() {
     return modal;
 }
 
-
+// Fonction qui affiche la modale qui permet d'ajouter des Photos
 export async function openAddPhotoModal(galleryModal) 
 {
+    // ferme la modale galerie
     const { closeModal } = setupModal(galleryModal);
     closeModal();
 
@@ -69,6 +72,11 @@ export async function openAddPhotoModal(galleryModal)
     const closeBtn = document.createElement("span");
     closeBtn.classList.add("modal-close");
     closeBtn.innerHTML = "&times;";
+
+    const backBtn = document.createElement("span");
+    backBtn.classList.add("back-btn");
+    backBtn.innerHTML = '<i class="fa-solid fa-arrow-left"></i>'; 
+    
 
     const form = document.createElement("form");
     form.classList.add("modal-form");
@@ -153,6 +161,7 @@ export async function openAddPhotoModal(galleryModal)
     // Charger les catégories
     try {
         const categories = await getCategories();
+        // parcours les categories et creer une option pour chaque categorie avec son id et le nom
         categories.forEach((category) => {
             const option = document.createElement("option");
             option.value = category.id;
@@ -162,12 +171,11 @@ export async function openAddPhotoModal(galleryModal)
     } catch (error) {
             console.error("Erreur lors du chargement des catégories :", error);
     }
-
+    // ajoute le label a la categorie et ajoute la liste au groupe
     categoryGroup.appendChild(categoryLabel);
     categoryGroup.appendChild(categorySelect);
 
     const separator = document.createElement('hr')
-
 
     const submitButton = document.createElement("button");
     submitButton.type = "submit";
@@ -180,35 +188,45 @@ export async function openAddPhotoModal(galleryModal)
     form.appendChild(separator);
     form.appendChild(submitButton);
 
-    modalWrapper.appendChild(closeBtn);
+    modalWrapper.appendChild(backBtn); 
+    modalWrapper.appendChild(closeBtn); 
+
     modalWrapper.appendChild(form);
 
     addPhotoModal.appendChild(modalWrapper);
     document.body.appendChild(addPhotoModal);
 
-   
     addPhotoModal.classList.remove("hidden");
 
+    // Configure la fonction closeModal pour la modale d'ajout de photo
     const { closeModal: closeAddPhotoModal } = setupModal(addPhotoModal);
   
     closeBtn.addEventListener("click", () => {
         closeAddPhotoModal();
+        //galleryModal.classList.remove("hidden"); 
+    });
+    backBtn.addEventListener("click", () => {
+        closeAddPhotoModal();
         galleryModal.classList.remove("hidden"); 
     });
-
+    // Ajoute un gestionnaire d'événements pour la soumission du formulaire
     form.addEventListener("submit", async (event) => {
+        // Empêche le comportement par défaut du formulaire
         event.preventDefault();
-    
+
+        // Récupère les données du formulaire
         const formData = new FormData(form);
         const fileInput = form.querySelector(".file-input");
         const categorySelect = form.querySelector(".form-select");
     
+        // Vérifie si le fichier ou la catégorie n'est pas rempli
         if (!fileInput.files[0] || !categorySelect.value) {
             alert("Veuillez remplir tous les champs !");
             return;
         }
     
         try {
+            // Tente de soumettre les données du formulaire
             const response = await addProject(formData);
             //les données du nouveau projet ajouté
             const newProject = await response.json(); 
@@ -233,9 +251,11 @@ export async function openAddPhotoModal(galleryModal)
         }
     });
     
+    // Previsualisation de l'image
     fileInput.addEventListener("change", (event) => {
         const file = event.target.files[0];
         if (file) {
+            // Crée un lecteur de fichier
             const reader = new FileReader();
             reader.onload = () => {
 
@@ -243,6 +263,7 @@ export async function openAddPhotoModal(galleryModal)
                 previewImage.style.display = "block";
                 uploadSection.classList.add("hidden-upload");
             };
+            // lit le fichier comme une URL
             reader.readAsDataURL(file);
         } else {
  
@@ -250,13 +271,14 @@ export async function openAddPhotoModal(galleryModal)
             uploadSection.classList.remove("hidden-upload");
         }
     });
-
-
 }
 
-export function setupModal(modal) {
+// Fonction qui setup le comportement de la modale
+export function setupModal(modal) 
+{
     const closeModalButton = modal.querySelector(".modal-close");
 
+    // ouverture de la modale
     const openModal = async () => {
         try {
             modal.classList.remove("hidden");
@@ -266,20 +288,23 @@ export function setupModal(modal) {
             alert("Une erreur est survenue lors de l'ouverture de la modale.");
         }
     };
-
+    // fermeture de la modale
     const closeModal = () => {
         modal.classList.remove("visible");
         modal.classList.add("hidden");
     };
 
+    // ajout gestionnaire event
     closeModalButton.addEventListener("click", closeModal);
 
+
+    // Ajoute un gestionnaire d'événement au clic sur la modale.
     modal.addEventListener("click", (event) => {
         if (event.target === modal) {
             closeModal();
         }
     });
-
+    // fermeture touche echap
     document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && modal.classList.contains("visible")) {
             closeModal();
@@ -289,11 +314,14 @@ export function setupModal(modal) {
     return { openModal, closeModal };
 }
 
-export function displayProjectsInModal(modal, projects) {
+// Fonction qui affiche les projets dans la modale
+export function displayProjectsInModal(modal, projects) 
+{
     console.log("Projets affichés dans la modale :", projects);
     const projectList = modal.querySelector("#project-list");
 
     projectList.innerHTML = "";
+    // parcours la liste dse projet et ajoute a la modale l'image et bouton
     projects.forEach(project => {
         const projectItem = document.createElement("div");
         projectItem.classList.add("project-item");
